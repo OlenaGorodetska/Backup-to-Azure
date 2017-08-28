@@ -1,0 +1,30 @@
+function removeFilesFromContainer
+{
+    Param(
+        [string]$containerName,
+        $blobContext
+        )
+
+    $filelist = Get-AzureStorageBlob -Container $containerName -Context $blobContext
+
+    foreach ($file in $filelist | Where-Object {$_.LastModified.DateTime -lt ((Get-Date).AddDays(-14))})
+    {
+        $removefile = $file.Name
+        if ($removefile -ne $null)
+        {
+            Write-Host "Removing file $removefile"
+            Remove-AzureStorageBlob -Blob $removeFile -Container $containerName -Context $blobContext
+        }
+    }
+}
+
+$containers="container1", "container2", "container3"
+
+$StorageAccountName="AccountName"
+$StorageAccountKey="AccountKey"
+$context = New-AzureStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey
+
+foreach ($item in $containers)
+{
+    removeFilesFromContainer -containerName $item -blobContext $context
+}
