@@ -1,0 +1,11 @@
+
+$secpasswd = ConvertTo-SecureString "password" -AsPlainText -Force
+$UserCredential = New-Object System.Management.Automation.PSCredential ("mail@some.com", $secpasswd)
+$DateFrom = (Get-Date).AddDays(-2)
+$DateTo = Get-Date
+$FormattedFileName = $DateFrom.ToString("yyyy-MM-dd")
+$DestinationFile = "D:\WORK\PowerBI\powerbi-$FormattedFileName.csv"
+$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $UserCredential -Authentication Basic -AllowRedirection
+Import-PSSession $Session -AllowClobber 
+
+Search-UnifiedAuditLog -StartDate $DateFrom.ToString("MM-dd-yyyy") -EndDate $DateTo -RecordType PowerBI -ResultSize 5000 | Export-Csv $DestinationFile
