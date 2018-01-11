@@ -1,6 +1,6 @@
 function removeFilesFromContainer
-{
-    Param(
+{ 
+    Param( 
         [string]$containerName,
         $blobContext
         )
